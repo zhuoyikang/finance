@@ -1,5 +1,6 @@
 [[https://wequant.io/study/strategy.simple_moving_average.html][简单双均线策略(Simple Moving Average) ]]
 
+
 * 简单均线
 
 #+begin_src python
@@ -34,13 +35,6 @@ def handle_data(context):
     elif current_price < ma and context.account.huobi_cny_btc >= HUOBI_CNY_BTC_MIN_ORDER_QUANTITY: # 当前价格小于均价时，全仓卖出
         context.order.sell(context.security, quantity=str(context.account.huobi_cny_btc))
 #+end_src
-
-#+ATTR_HTML: :width 60%  
-[[./images/简单均线价格策略.jpg]]
-
-
-
-
 
 
 * 简单双均线
