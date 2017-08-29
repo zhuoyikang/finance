@@ -78,7 +78,7 @@ def handle_data(context):
     try:
         # 获取最新的 ATR 值
         atr = talib.ATR(high, low, close, timeperiod=context.user_data.atr_period)[-1]
-    except:
+        except:
         context.log.error("计算 ATR 时出现错误...")
         return
 
@@ -90,7 +90,7 @@ def handle_data(context):
     upper = prev_price + context.user_data.long_multi * atr
     lower = prev_price - context.user_data.short_multi * atr
 
-    context.log.info("当前价格=%s 元, 上轨=%s 元, 下轨=%s 元" % (current_price, upper, lower))
+    context.log.info("当前价格=%s 元, 上轨=%s 元, 下轨=%s 元 prev_price=%s atr=%s" % (current_price, upper, lower, prev_price, atr))
 
     # 如果当前价格比之前价格低 1 个 ATR，产生卖出信号
     if current_price < lower:
@@ -113,5 +113,5 @@ def handle_data(context):
         else:
             context.log.info("现金不足，无法下单")
     else:
-        context.log.info("无交易信号，进入下一根bar")
+        context.log.info("无交易信号，进入下一根 bar")
 #+end_src
