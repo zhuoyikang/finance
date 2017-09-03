@@ -21,7 +21,7 @@ import numpy as np
 # PARAMS 用于设定程序参数，回测的起始时间、结束时间、滑点误差、初始资金和持仓。
 # 可以仿照格式修改，基本都能运行。如果想了解详情请参考新手学堂的 API 文档。
 PARAMS  = {
-    "start_time": "2017-09-1 05:00:00",  # 回测起始时间
+    "start_time": "2017-08-1 05:00:00",  # 回测起始时间
     "end_time": "2017-09-03 18:00:00",  # 回测结束时间
     "commission": 0.002,  # 此处设置交易佣金
     "slippage": 0.001,  # 此处设置交易滑点
@@ -34,7 +34,7 @@ PARAMS  = {
 # initialize 函数是两大核心函数之一（另一个是 handle_data），用于初始化策略变量。
 # 策略变量包含：必填变量，以及非必填（用户自己方便使用）的变量
 def initialize(context):
-    context.frequency = "1m"
+    context.frequency = "30m"
     context.benchmark = "huobi_cny_ltc"
     context.security = "huobi_cny_ltc"
 
@@ -50,7 +50,8 @@ def initialize(context):
     context.user_data.sell_ma60_cp = 1  # 数据比较位
 
     context.user_data.buy_long_window = 60 + context.user_data.buy_ma60_cp
-    context.user_data.buy_frenquency = "5m"
+    # context.user_data.buy_frenquency = "30m"
+    context.user_data.buy_frenquency = context.frequency
     context.user_data.status = "buy"
 
     #context.user_data.buy_threshold = 0.01
