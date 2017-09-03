@@ -21,12 +21,12 @@ import numpy as np
 # PARAMS用于设定程序参数，回测的起始时间、结束时间、滑点误差、初始资金和持仓。
 # 可以仿照格式修改，基本都能运行。如果想了解详情请参考新手学堂的API文档。
 PARAMS = {
-    "start_time": "2017-08-15 00:00:00",
+    "start_time": "2017-01-15 00:00:00",
     "end_time": "2017-09-03 12:00:00",
     "commission": 0.002,  # 此处设置交易佣金
     "slippage": 0.001,  # 此处设置交易滑点
     "account_initial": {"huobi_cny_cash": 100000,
-                        "huobi_cny_ltc": 0},
+                        "huobi_cny_btc": 0},
 }
 
 
@@ -35,14 +35,14 @@ PARAMS = {
 # 策略变量包含：必填变量，以及非必填（用户自己方便使用）的变量
 def initialize(context):
     # 设置回测频率, 可选："1m", "5m", "15m", "30m", "60m", "4h", "1d", "1w"
-    context.frequency = "1m"
-    # 设置回测基准, 比特币："huobi_cny_ltc", 莱特币："huobi_cny_ltc", 以太坊："huobi_cny_eth"
-    context.benchmark = "huobi_cny_ltc"
-    # 设置回测标的, 比特币："huobi_cny_ltc", 莱特币："huobi_cny_ltc", 以太坊："huobi_cny_eth"
-    context.security = "huobi_cny_ltc"
+    context.frequency = "1d"
+    # 设置回测基准, 比特币："huobi_cny_btc", 莱特币："huobi_cny_btc", 以太坊："huobi_cny_eth"
+    context.benchmark = "huobi_cny_btc"
+    # 设置回测标的, 比特币："huobi_cny_btc", 莱特币："huobi_cny_btc", 以太坊："huobi_cny_eth"
+    context.security = "huobi_cny_btc"
 
     # 设置ATR值回看窗口
-    context.user_data.T = 20
+    context.user_data.T = 10
 
     # 自定义的初始化函数
     init_local_context(context)
@@ -51,14 +51,14 @@ def initialize(context):
 
 
 def my_cny_net(ltc_price, account):
-    all = account.huobi_cny_cash + ltc_price*account.huobi_cny_ltc
+    all = account.huobi_cny_cash + ltc_price*account.huobi_cny_btc
     return all
 
 # 阅读3，策略核心逻辑：
 # handle_data函数定义了策略的执行逻辑，按照frequency生成的bar依次读取并执行策略逻辑，直至程序结束。
 # handle_data和bar的详细说明，请参考新手学堂的解释文档。
 def handle_data(context):
-    # 获取历史数 据
+    # 获取历史数据
     hist = context.data.get_price(context.security, count=context.user_data.T + 1, frequency=context.frequency)
     if len(hist.index) < (context.user_data.T + 1):
         context.log.warn("bar的数量不足, 等待下一根bar...")
@@ -72,14 +72,14 @@ def handle_data(context):
     atr = calc_atr(hist)
 
     # 2 判断加仓或止损
-    if context.user_data.hold_flag is True and context.account.huobi_cny_ltc > 0:  # 先判断是否持仓
+    if context.user_data.hold_flag is True and context.account.huobi_cny_btc > 0:  # 先判断是否持仓
         temp = add_or_stop(price, context.user_data.last_buy_price, atr, context)
         if temp == 1:  # 判断加仓
             if context.user_data.add_time < context.user_data.limit_unit:  # 判断加仓次数是否超过上限
                 context.log.info("产生加仓信号")
                 cash_amount = min(context.account.huobi_cny_cash, context.user_data.unit * price)  # 不够1 unit时买入剩下全部
                 context.user_data.last_buy_price = price
-                if cash_amount >= HUOBI_CNY_LTC_MIN_ORDER_CASH_AMOUNT:
+                if cash_amount >= HUOBI_CNY_BTC_MIN_ORDER_CASH_AMOUNT:
                     context.user_data.add_time += 1
                     context.log.info("正在买入 %s" % context.security)
                     context.log.info("下单金额为 %s 元" % cash_amount)
@@ -94,8 +94,8 @@ def handle_data(context):
             # 卖出止损
             context.log.info("产生止损信号")
             context.log.info("正在卖出 %s" % context.security)
-            context.log.info("卖出数量为 %s" % context.account.huobi_cny_ltc)
-            context.order.sell(context.security, quantity=str(context.account.huobi_cny_ltc))
+            context.log.info("卖出数量为 %s" % context.account.huobi_cny_btc)
+            context.order.sell(context.security, quantity=str(context.account.huobi_cny_btc))
             # 3 判断入场离场
     else:
         #out = in_or_out(context, hist.iloc[1:], price, context.user_data.T)
@@ -118,14 +118,14 @@ def handle_data(context):
                 context.log.info("已经入场，不产生入场信号")
         elif out == -1:  # 离场
             if context.user_data.hold_flag is True:
-                if context.account.huobi_cny_ltc >= HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
+                if context.account.huobi_cny_btc >= HUOBI_CNY_BTC_MIN_ORDER_QUANTITY:
                     context.log.info("产生止盈离场信号")
                     # 重新初始化参数！重新初始化参数！重新初始化参数！非常重要！
                     init_local_context(context)
                     # 有卖出信号，且持有仓位，则市价单全仓卖出
                     context.log.info("正在卖出 %s" % context.security)
-                    context.log.info("卖出数量为 %s" % context.account.huobi_cny_ltc)
-                    context.order.sell(context.security, quantity=str(context.account.huobi_cny_ltc))
+                    context.log.info("卖出数量为 %s" % context.account.huobi_cny_btc)
+                    context.order.sell(context.security, quantity=str(context.account.huobi_cny_btc))
             else:
                 context.log.info("尚未入场或已经离场，不产生离场信号")
 
