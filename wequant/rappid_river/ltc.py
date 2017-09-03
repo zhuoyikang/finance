@@ -15,14 +15,15 @@
 # 2)利用均线的突破来决定买卖
 
 import numpy as np
+from logging import DEBUG, INFO, WARN, ERROR
 
 
 # 阅读 1，首次阅读可跳过:
 # PARAMS 用于设定程序参数，回测的起始时间、结束时间、滑点误差、初始资金和持仓。
 # 可以仿照格式修改，基本都能运行。如果想了解详情请参考新手学堂的 API 文档。
 PARAMS = {
-    "start_time": "2017-08-26 00:00:00",  # 回测起始时间
-    "end_time": "2017-09-02 08:00:00",  # 回测结束时间
+    "start_time": "2017-08-15 00:00:00",  # 回测起始时间
+    "end_time": "2017-09-03 12:00:00",  # 回测结束时间
     "commission": 0.002,  # 此处设置交易佣金
     "slippage": 0.001,  # 此处设置交易滑点
     "account_initial": {"huobi_cny_cash": 100000,
@@ -51,6 +52,8 @@ def initialize(context):
     context.user_data.enter_threshold = 0.03
     # 出场线, 用户自定义的变量，可以被 handle_data 使用
     context.user_data.exit_threshold = 0.05
+
+    context.log.set_level(DEBUG)
 
 
 # 阅读 3，策略核心逻辑：
@@ -98,7 +101,7 @@ def handle_data(context):
         else:
             context.log.info("资金不足，无法买入")
     else:
-        context.log.info("5m无交易信号，进入下一根 bar")
+        context.log.debug("5m无交易信号，进入下一根 bar")
 
 
 
@@ -124,7 +127,7 @@ def handle_data(context):
     if short_mean < lower:
         context.log.warn("卖出信号: 当前 短期均线 = %s, 长期均线 = %s, 上轨 = %s, 下轨 = %s" % (
             short_mean, long_mean, upper, lower))
-        
+
         if context.account.huobi_cny_ltc >= HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
 
             # 有卖出信号，且持有仓位，则市价单全仓卖出
@@ -136,4 +139,4 @@ def handle_data(context):
         else:
             context.log.info("仓位不足，无法卖出")
     else:
-        context.log.info("1m无交易信号，进入下一根 bar")
+        context.log.debug("1m无交易信号，进入下一根 bar")

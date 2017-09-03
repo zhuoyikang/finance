@@ -21,8 +21,8 @@ import numpy as np
 # PARAMS 用于设定程序参数，回测的起始时间、结束时间、滑点误差、初始资金和持仓。
 # 可以仿照格式修改，基本都能运行。如果想了解详情请参考新手学堂的 API 文档。
 PARAMS  = {
-    "start_time": "2017-08-15 05:00:00",  # 回测起始时间
-    "end_time": "2017-09-03 11:00:00",  # 回测结束时间
+    "start_time": "2017-09-1 05:00:00",  # 回测起始时间
+    "end_time": "2017-09-03 18:00:00",  # 回测结束时间
     "commission": 0.002,  # 此处设置交易佣金
     "slippage": 0.001,  # 此处设置交易滑点
     "account_initial": {"huobi_cny_cash": 100000,
@@ -44,9 +44,9 @@ def initialize(context):
     context.user_data.buy_ma30_cp = 2  # 数据比较位
     context.user_data.buy_ma60_cp = 1  # 数据比较位
 
-    context.user_data.sell_ma5_cp = 3  # 数据比较位
-    context.user_data.sell_ma10_cp = 2  # 数据比较位
-    context.user_data.sell_ma30_cp = 1  # 数据比较位
+    context.user_data.sell_ma5_cp = 5  # 数据比较位
+    context.user_data.sell_ma10_cp = 3  # 数据比较位
+    context.user_data.sell_ma30_cp = 2  # 数据比较位
     context.user_data.sell_ma60_cp = 1  # 数据比较位
 
     context.user_data.buy_long_window = 60 + context.user_data.buy_ma60_cp
@@ -54,7 +54,7 @@ def initialize(context):
     context.user_data.status = "buy"
 
     #context.user_data.buy_threshold = 0.01
-    context.user_data.price_threshold = 0.03
+    context.user_data.price_threshold = 0.00
     context.user_data.sell_threshold = 0.03
     context.user_data.buy_price = 0.0
 
@@ -92,7 +92,7 @@ def ma_is_downing(context, array, cp_nice, ma):
             c1 = np.mean(array[-1*ma - move_god: -move_god])
 
         c2 = np.mean(array[-1*ma - move_god -1: -move_god -1])
-        # context.log.info("c2 %s c1 %s"%(c2, c1))
+        #context.log.info("c2 %s c1 %s"%(c2, c1))
         move_god +=1
         if c1 > c2:
             return False
@@ -106,8 +106,8 @@ def ma_is_downing(context, array, cp_nice, ma):
 # ma5超越ma10，并且ma5,ma10,ma30共同处于上升期，则为买入时机.
 def handle_buy(context, hist):
     # 买入时机只抓一次
-    if context.user_data.status != "buy":
-        return
+    # if context.user_data.status != "buy":
+    #     return
 
     hist_close = hist["close"]
 
@@ -135,22 +135,27 @@ def handle_buy(context, hist):
     if ma_is_upping(context, hist_close, context.user_data.buy_ma60_cp, 60) == False:
         return
 
-    context.log.info("uping buy time occur ma5 %s ma10 %s ma30 %s ma60 %s" %(ma5, ma10,ma30, ma60))
 
     if context.account.huobi_cny_cash <= HUOBI_CNY_LTC_MIN_ORDER_CASH_AMOUNT:
-        context.log.info("想买，但是没钱")
+        #context.log.info("想买，但是没钱")
         return
+
+    context.log.info("uping buy time occur ma5 %s ma10 %s ma30 %s ma60 %s" %(ma5, ma10,ma30, ma60))
 
     # 有买入信号，且持有现金，则市价单全仓买入
     buy_quantity = context.account.huobi_cny_cash/hist_close[-1]*0.98
+
     if buy_quantity < HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
-        context.user_data.status = "sell"
+        # context.user_data.status = "sell"
         # context.log.info("想买，但是已经满仓 %s" % context.security)
         return
 
     # 只买一次，能买多少是多少
     context.log.info("正在买入 %s" % context.security)
     context.log.info("下单金额为 %s 元" % context.account.huobi_cny_cash)
+
+    context.user_data.status = "sell"
+
     if context.user_data.buy_price < hist_close[-1]*1.01:
         context.user_data.buy_price = hist_close[-1]*1.01
     context.order.buy_limit(context.security, quantity=str(buy_quantity),
@@ -160,8 +165,8 @@ def handle_buy(context, hist):
 
 # 判断是不是一个好的卖出时机，要清仓.
 def handle_sell(context, hist):
-    if context.user_data.status != "sell":
-        return
+    # if context.user_data.status != "sell":
+    #     return
 
     hist_close = hist["close"]
 
@@ -174,8 +179,8 @@ def handle_sell(context, hist):
     if ma5 > ma10:
         return
 
-    if (ma10 - ma5) / ma10 < context.user_data.sell_threshold:
-        return
+    # if (ma10 - ma5) / ma10 < context.user_data.sell_threshold:
+    #     return
 
     if ma_is_downing(context, hist_close, context.user_data.sell_ma5_cp, 5) == False:
         return
@@ -183,15 +188,21 @@ def handle_sell(context, hist):
     if ma_is_downing(context, hist_close, context.user_data.sell_ma10_cp, 10) == False:
         return
 
-    context.log.info("downing sell time occur ma5 %s ma10 %s ma30 %s ma60 %s" %(ma5, ma10,ma30, ma60))
+    if ma_is_downing(context, hist_close, context.user_data.sell_ma30_cp, 30) == False:
+        return
 
     if context.account.huobi_cny_ltc >= HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
         sell_price = hist_close[-1]*0.99
-        if ((sell_price - context.user_data.buy_price) / context.user_data.buy_price) > context.user_data.price_threshold:
-            context.log.warn("正在卖出 %s" % context.security)
-            context.log.warn("卖出数量为 %s" % context.account.huobi_cny_ltc)
-            context.order.sell_limit(context.security, quantity=str(context.account.huobi_cny_ltc),
-                                     price=str(hist_close[-1]*0.99))
+        context.log.info("downing sell time occur ma5 %s ma10 %s ma30 %s ma60 %s" %(ma5, ma10,ma30, ma60))
+
+        # 计算亏损，如果亏损太大则不卖
+        # if ((sell_price - context.user_data.buy_price) / context.user_data.buy_price) < context.user_data.price_threshold:
+        #     return
+
+        context.log.warn("正在卖出 %s" % context.security)
+        context.log.warn("卖出数量为 %s" % context.account.huobi_cny_ltc)
+        context.order.sell_limit(context.security, quantity=str(context.account.huobi_cny_ltc),
+                                 price=str(hist_close[-1]*0.99))
     else:
         # 等待下一次买入
         context.user_data.status = "buy"
