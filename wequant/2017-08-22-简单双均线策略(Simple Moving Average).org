@@ -177,8 +177,7 @@
         # 价格下轨
         lower = long_mean - context.user_data.exit_threshold * long_mean
 
-        #context.log.info("当前 短期均线 = %s, 长期均线 = %s, 上轨 = %s, 下轨 = %s" % (
-        #short_mean, long_mean, upper, lower))
+        context.log.info("当前 短期均线 = %s, 长期均线 = %s, 上轨 = %s, 下轨 = %s" % (short_mean, long_mean, upper, lower))
 
         # 短期线突破长期线一定比例，产生买入信号
         if short_mean > upper:
@@ -193,7 +192,7 @@
                 if close[-1]*0.98 > context.user_data.last_buy_price:
                     context.user_data.last_buy_price = close[-1]*0.98
 
-                context.log.info("当前 短期均线 = %s, 长期均线 = %s, 上轨 = %s, 下轨 = %s" % (
+                context.log.warn("当前 短期均线 = %s, 长期均线 = %s, 上轨 = %s, 下轨 = %s" % (
                     short_mean, long_mean, upper, lower))
                 context.log.warn("context.user_data.last_buy_price %s" % context.user_data.last_buy_price)
 
@@ -204,6 +203,7 @@
             #else:
                 #context.log.info("现金不足，无法下单")
                 # 短期线低于长期线一定比例，产生卖出信号
+
         elif short_mean < lower:
             #context.log.info("短期均线穿越下轨，产生卖出信号")
             if context.account.huobi_cny_btc >= HUOBI_CNY_BTC_MIN_ORDER_QUANTITY:
@@ -213,7 +213,7 @@
                 if context.user_data.last_buy_price == 0:
                     return
 
-                context.log.info("当前 短期均线 = %s, 长期均线 = %s, 上轨 = %s, 下轨 = %s" % (
+                context.log.warn("当前 短期均线 = %s, 长期均线 = %s, 上轨 = %s, 下轨 = %s" % (
                     short_mean, long_mean, upper, lower))
 
                 # 如果价格定于买入价格的 0.
