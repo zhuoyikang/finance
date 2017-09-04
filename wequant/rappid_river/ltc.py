@@ -39,15 +39,15 @@ def initialize(context):
     context.security = "huobi_cny_ltc"
 
     # 买入参数
-    context.user_data.buy_ma5_cp = 3  # 数据比较位
+    context.user_data.buy_ma5_cp = 5  # 数据比较位
     context.user_data.buy_ma10_cp = 3  # 数据比较位
     context.user_data.buy_ma30_cp = 2  # 数据比较位
     context.user_data.buy_ma60_cp = 1  # 数据比较位
 
-    context.user_data.sell_ma5_cp = 0  # 数据比较位
-    context.user_data.sell_ma10_cp = 1  # 数据比较位
-    context.user_data.sell_ma30_cp = 1  # 数据比较位
-    context.user_data.sell_ma60_cp = 0  # 数据比较位
+    context.user_data.sell_ma5_cp = 5  # 数据比较位
+    context.user_data.sell_ma10_cp = 3  # 数据比较位
+    context.user_data.sell_ma30_cp = 2  # 数据比较位
+    context.user_data.sell_ma60_cp = 1  # 数据比较位
 
     context.user_data.buy_long_window = 60 + context.user_data.buy_ma60_cp
     context.user_data.status = "buy"
