@@ -42,7 +42,14 @@ def initialize(context):
     context.security = "huobi_cny_ltc"
 
     # 设置ATR值回看窗口
-    context.user_data.T = 10
+    context.user_data.T = 20
+
+    # 买入参数
+    context.user_data.ma5_cp = 5  # 数据比较位
+    context.user_data.ma10_cp = 3  # 数据比较位
+    context.user_data.ma30_cp = 2  # 数据比较位
+    context.user_data.ma60_cp = 1  # 数据比较位
+    context.user_data.buy_long_window = 60 + context.user_data.ma60_cp
 
     # 自定义的初始化函数
     init_local_context(context)
@@ -50,9 +57,107 @@ def initialize(context):
     # 至此initialize函数定义完毕。
 
 
-# def my_cny_net(ltc_price, account):
-#     all = account.huobi_cny_cash + ltc_price*account.huobi_cny_ltc
-#     return all
+# 是否在上升
+def ma_is_upping(context, array, cp_nice, ma):
+    move_god = 0
+    while cp_nice > 0 :
+        cp_nice -=1
+        if move_god == 0 :
+            c1 = np.mean(array[-1*ma - move_god:])
+        else:
+            c1 = np.mean(array[-1*ma - move_god: -move_god])
+
+        c2 = np.mean(array[-1*ma - move_god -1:-move_god -1])
+        #context.log.info("c2 %s c1 %s"%(c2, c1))
+        move_god +=1
+        if c1 < c2:
+            return False
+
+    #context.log.info("ma %s is upping ---------------> "%(ma))
+    return True
+
+
+
+# 是否在下降
+def ma_is_downing(context, array, cp_nice, ma):
+    move_god = 0
+
+    while cp_nice > 0 :
+        cp_nice -=1
+        if move_god == 0 :
+            c1 = np.mean(array[-1*ma - move_god:])
+        else:
+            c1 = np.mean(array[-1*ma - move_god: -move_god])
+
+        c2 = np.mean(array[-1*ma - move_god -1: -move_god -1])
+        #context.log.info("c2 %s c1 %s"%(c2, c1))
+        move_god +=1
+        if c1 > c2:
+            return False
+
+    #context.log.info("ma %s is downing ---------------->"%(ma))
+    return True
+
+
+
+# 石佛那个在整体上升
+def is_uping(context, hist):
+    hist_close = hist["close"]
+
+    ma5 = np.mean(hist_close[-1 * 5:])
+    ma10 = np.mean(hist_close[-1 * 10:])
+    ma30 = np.mean(hist_close[-1 * 30:])
+    ma60 = np.mean(hist_close[-1 * 60:])
+
+    # 当前ma5穿越ma10再进入一步判断
+    # if ma5 < ma10:
+    #     return False
+
+    if ma10 < ma30:
+        return False
+
+    # if ma_is_upping(context, hist_close, context.user_data.ma5_cp, 5) == False:
+    #     return False
+
+    if  ma_is_upping(context, hist_close, context.user_data.ma10_cp, 10) == False:
+        return False
+
+    if  ma_is_upping(context, hist_close, context.user_data.ma30_cp, 30) == False:
+        return False
+
+    # if ma_is_upping(context, hist_close, context.user_data.ma60_cp, 60) == False:
+    #     return False
+
+    return True
+
+
+
+def is_downing(context, hist, no):
+    hist_close = hist["close"]
+
+    ma5 = np.mean(hist_close[-1 * 5:])
+    ma10 = np.mean(hist_close[-1 * 10:])
+    ma30 = np.mean(hist_close[-1 * 30:])
+    ma60 = np.mean(hist_close[-1 * 60:])
+
+    # 当前ma5低于ma10再进入一步判断
+    if ma5 > ma10:
+        return False
+
+    # if (ma10 - ma5) / ma10 < context.user_data.sell_threshold:
+    #     return False
+
+    if no >= 5 and ma_is_downing(context, hist_close, context.user_data.ma5_cp, 5) == False:
+        return False
+
+    if no >= 10 and  ma_is_downing(context, hist_close, context.user_data.ma10_cp, 10) == False:
+        return False
+
+    if no >= 30 and ma_is_downing(context, hist_close, context.user_data.ma30_cp, 30) == False:
+        return False
+
+    return True
+
 
 # 阅读3，策略核心逻辑：
 # handle_data函数定义了策略的执行逻辑，按照frequency生成的bar依次读取并执行策略逻辑，直至程序结束。
@@ -68,16 +173,15 @@ def handle_data(context):
     price = context.data.get_current_price(context.security)
 
     # 1 计算ATR
-    #atr = calc_atr(hist.iloc[:len(hist)-1])
     atr = calc_atr(hist)
 
     # 2 判断加仓或止损
     if context.user_data.hold_flag is True and context.account.huobi_cny_ltc > 0:  # 先判断是否持仓
-        temp = add_or_stop(price, context.user_data.last_buy_price, atr, context)
+        temp = add_or_stop(price, context.user_data.last_buy_price, atr, context, hist.iloc[:len(hist) - 1])
         if temp == 1:  # 判断加仓
             if context.user_data.add_time < context.user_data.limit_unit:  # 判断加仓次数是否超过上限
                 context.log.info("产生加仓信号")
-                cash_amount = min(context.account.huobi_cny_cash, context.user_data.unit)  # 不够1 unit时买入剩下全部
+                cash_amount = min(context.account.huobi_cny_cash, context.user_data.unit * price)  # 不够1 unit时买入剩下全部
                 context.user_data.last_buy_price = price
                 if cash_amount >= HUOBI_CNY_LTC_MIN_ORDER_CASH_AMOUNT:
                     context.user_data.add_time += 1
@@ -98,17 +202,15 @@ def handle_data(context):
             context.order.sell(context.security, quantity=str(context.account.huobi_cny_ltc))
             # 3 判断入场离场
     else:
-        #out = in_or_out(context, hist.iloc[1:], price, context.user_data.T)
         out = in_or_out(context, hist.iloc[:len(hist) - 1], price, context.user_data.T)
         if out == 1:  # 入场
             if context.user_data.hold_flag is False:
-                value = context.account.huobi_cny_net # *0.25
-                # value = my_cny_net(price,context.account)
-                context.user_data.unit = calc_unit(context, value, atr)
+                value = context.account.huobi_cny_net * 0.01
+                context.user_data.unit = calc_unit(value, atr)
                 context.user_data.add_time = 1
                 context.user_data.hold_flag = True
                 context.user_data.last_buy_price = price
-                cash_amount = min(context.account.huobi_cny_cash, context.user_data.unit)
+                cash_amount = min(context.account.huobi_cny_cash, context.user_data.unit * price)
                 # 有买入信号，执行买入
                 context.log.info("产生入场信号 %s"%(value))
                 context.log.info("正在买入 %s" % context.security)
@@ -116,6 +218,7 @@ def handle_data(context):
                 context.order.buy(context.security, cash_amount=str(cash_amount))
             else:
                 context.log.info("已经入场，不产生入场信号")
+
         elif out == -1:  # 离场
             if context.user_data.hold_flag is True:
                 if context.account.huobi_cny_ltc >= HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
@@ -137,7 +240,7 @@ def init_local_context(context):
     # 是否持有头寸标志
     context.user_data.hold_flag = False
     # 限制最多买入的单元数
-    context.user_data.limit_unit = 1000
+    context.user_data.limit_unit = 4
     # 现在买入1单元的security数目
     context.user_data.unit = 0
     # 买入次数
@@ -151,18 +254,21 @@ def in_or_out(context, data, price, T):
     # 这里是T/2唐奇安下沿，在向下突破T/2唐奇安下沿卖出而不是在向下突破T唐奇安下沿卖出，这是为了及时止损
     down = np.min(data["low"].iloc[-int(T / 2):])
     context.log.info("当前价格为: %s, 唐奇安上轨为: %s, 唐奇安下轨为: %s" % (price, up, down))
-    # 当前价格升破唐奇安上沿，产生入场信号
-    if price > up:
-        context.log.info("价格突破唐奇安上轨")
-        return 1
-    # 当前价格跌破唐奇安下沿，产生出场信号
-    elif price < down:
-        context.log.info("价格跌破唐奇安下轨")
-        return -1
-    # 未产生有效信号
-    else:
+
+    hist = context.data.get_price(context.security, count=context.user_data.buy_long_window,
+                                  frequency=context.frequency)
+
+    if len(hist.index) < context.user_data.buy_long_window:
         return 0
 
+    if price < down and  is_downing(context, hist, 10):
+        return -1
+
+
+    if is_uping(context, hist) == True and context.account.huobi_cny_cash > HUOBI_CNY_LTC_MIN_ORDER_CASH_AMOUNT:
+        return 1
+
+    return 0
 
 # 用户自定义的函数，可以被handle_data调用：ATR值计算
 def calc_atr(data):  # data是日线级别的历史数据
@@ -180,19 +286,28 @@ def calc_atr(data):  # data是日线级别的历史数据
 
 # 用户自定义的函数，可以被handle_data调用
 # 计算unit
-def calc_unit(context, per_value, atr):
-    context.log.info("per_value %s atr %s"%(per_value, atr))
+def calc_unit(per_value, atr):
     return per_value / atr
 
 
 # 用户自定义的函数，可以被handle_data调用
-# 判断是否加仓或止损:当价格相对上个买入价上涨 0.5ATR时，再买入一个unit; 当价格相对上个买入价下跌 2ATR时，清仓
-def add_or_stop(price, lastprice, atr, context):
-    if price >= lastprice + 0.5 * atr:
-        context.log.info("当前价格比上一个购买价格上涨超过0.5个ATR")
-        return 1
-    elif price <= lastprice - 2 * atr:
-        context.log.info("当前价格比上一个购买价格下跌超过2个ATR")
-        return -1
-    else:
+def add_or_stop(price, lastprice, atr, context, data):
+    T = context.user_data.T
+    # 这里是T/2唐奇安下沿，在向下突破T/2唐奇安下沿卖出而不是在向下突破T唐奇安下沿卖出，这是为了及时止损
+    up = np.max(data["high"].iloc[-T:])
+    down = np.min(data["low"].iloc[-int(T / 2):])
+
+    context.log.info("当前价格为: %s, 唐奇安上轨为: %s, 唐奇安下轨为: %s" % (price, up, down))
+    hist = context.data.get_price(context.security, count=context.user_data.buy_long_window,
+                                  frequency=context.frequency)
+    if len(hist.index) < context.user_data.buy_long_window:
         return 0
+
+    if price < down and is_downing(context, hist, 10):
+        return -1
+
+    # 当趋势线向上则买入
+    if is_uping(context, hist) == True and context.account.huobi_cny_cash > HUOBI_CNY_LTC_MIN_ORDER_CASH_AMOUNT:
+        return 1
+
+    return 0
