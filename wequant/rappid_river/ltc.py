@@ -21,7 +21,7 @@ import numpy as np
 # PARAMS 用于设定程序参数，回测的起始时间、结束时间、滑点误差、初始资金和持仓。
 # 可以仿照格式修改，基本都能运行。如果想了解详情请参考新手学堂的 API 文档。
 PARAMS  = {
-    "start_time": "2017-05-15 22:00:00",  # 回测起始时间
+    "start_time": "2017-05-15 00:00:00",  # 回测起始时间
     "end_time": "2017-09-04 20:00:00",  # 回测结束时间
     "commission": 0.002,  # 此处设置交易佣金
     "slippage": 0.001,  # 此处设置交易滑点
@@ -39,19 +39,17 @@ def initialize(context):
     context.security = "huobi_cny_ltc"
 
     # 买入参数
-    context.user_data.buy_ma5_cp = 5  # 数据比较位
+    context.user_data.buy_ma5_cp = 3  # 数据比较位
     context.user_data.buy_ma10_cp = 3  # 数据比较位
     context.user_data.buy_ma30_cp = 2  # 数据比较位
     context.user_data.buy_ma60_cp = 1  # 数据比较位
 
-    context.user_data.sell_ma5_cp = 3  # 数据比较位
+    context.user_data.sell_ma5_cp = 0  # 数据比较位
     context.user_data.sell_ma10_cp = 1  # 数据比较位
     context.user_data.sell_ma30_cp = 1  # 数据比较位
-    context.user_data.sell_ma60_cp = 1  # 数据比较位
+    context.user_data.sell_ma60_cp = 0  # 数据比较位
 
     context.user_data.buy_long_window = 60 + context.user_data.buy_ma60_cp
-    # context.user_data.buy_frenquency = "30m"
-    context.user_data.buy_frenquency = context.frequency
     context.user_data.status = "buy"
 
     #context.user_data.buy_threshold = 0.01
@@ -119,8 +117,8 @@ def is_uping(context, hist_close):
     if ma10 < ma30:
         return False
 
-    # if ma_is_upping(context, hist_close, context.user_data.buy_ma5_cp, 5) == False:
-    #     return False
+    if ma_is_upping(context, hist_close, context.user_data.buy_ma5_cp, 5) == False:
+        return False
 
     if ma_is_upping(context, hist_close, context.user_data.buy_ma10_cp, 10) == False:
         return False
@@ -191,6 +189,10 @@ def is_downing(context, hist_close):
     if ma_is_downing(context, hist_close, context.user_data.sell_ma30_cp, 30) == False:
         return False
 
+    if ma_is_downing(context, hist_close, context.user_data.sell_ma60_cp, 60) == False:
+        return False
+
+
     context.log.info("downing sell time occur ma5 %s ma10 %s ma30 %s ma60 %s" %(ma5, ma10,ma30, ma60))
     return True
 
@@ -225,7 +227,7 @@ def handle_sell(context, hist):
 # handle_data 和 bar 的详细说明，请参考新手学堂的解释文档。
 def handle_data(context):
     hist = context.data.get_price(context.security, count=context.user_data.buy_long_window,
-                                  frequency=context.user_data.buy_frenquency)
+                                  frequency=context.frequency)
     if len(hist.index) < context.user_data.buy_long_window:
         context.log.info("bar 的数量不足, 等待下一根 bar...")
         return
