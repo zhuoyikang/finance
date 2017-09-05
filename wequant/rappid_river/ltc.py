@@ -21,7 +21,7 @@ import numpy as np
 # PARAMS 用于设定程序参数，回测的起始时间、结束时间、滑点误差、初始资金和持仓。
 # 可以仿照格式修改，基本都能运行。如果想了解详情请参考新手学堂的 API 文档。
 PARAMS  = {
-    "start_time": "2017-05-15 00:00:00",  # 回测起始时间
+    "start_time": "2017-08-15 00:00:00",  # 回测起始时间
     "end_time": "2017-09-04 20:00:00",  # 回测结束时间
     "commission": 0.002,  # 此处设置交易佣金
     "slippage": 0.001,  # 此处设置交易滑点
@@ -44,9 +44,9 @@ def initialize(context):
     context.user_data.buy_ma30_cp = 2  # 数据比较位
     context.user_data.buy_ma60_cp = 1  # 数据比较位
 
-    context.user_data.sell_ma5_cp = 5  # 数据比较位
-    context.user_data.sell_ma10_cp = 3  # 数据比较位
-    context.user_data.sell_ma30_cp = 2  # 数据比较位
+    context.user_data.sell_ma5_cp = 2  # 数据比较位
+    context.user_data.sell_ma10_cp = 2  # 数据比较位
+    context.user_data.sell_ma30_cp = 2   # 数据比较位
     context.user_data.sell_ma60_cp = 1  # 数据比较位
 
     context.user_data.buy_long_window = 60 + context.user_data.buy_ma60_cp
