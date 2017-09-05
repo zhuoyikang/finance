@@ -149,7 +149,7 @@ def handle_buy(context, hist):
         return
 
     # 有买入信号，且持有现金，则市价单全仓买入
-    buy_quantity = context.account.huobi_cny_cash/hist_close[-1]*0.98
+    buy_quantity = context.account.huobi_cny_cash/hist_close[-1]
 
     if buy_quantity < HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
         # context.user_data.status = "sell"
@@ -163,10 +163,10 @@ def handle_buy(context, hist):
 
     context.user_data.status = "sell"
 
-    if context.user_data.buy_price < hist_close[-1]*1.01:
-        context.user_data.buy_price = hist_close[-1]*1.01
+    if context.user_data.buy_price < hist_close[-1]:
+        context.user_data.buy_price = hist_close[-1]
     context.order.buy_limit(context.security, quantity=str(buy_quantity),
-                            price=str(hist_close[-1]*1.01))
+                            price=str(hist_close[-1]))
 
 
 
@@ -207,7 +207,7 @@ def handle_sell(context, hist):
         return
 
     if context.account.huobi_cny_ltc >= HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
-        sell_price = hist_close[-1]*0.99
+        sell_price = hist_close[-1]
 
         # 计算亏损，如果亏损太大则不卖
         # if ((sell_price - context.user_data.buy_price) / context.user_data.buy_price) < context.user_data.price_threshold:
@@ -216,7 +216,7 @@ def handle_sell(context, hist):
         context.log.warn("正在卖出 %s" % context.security)
         context.log.warn("卖出数量为 %s" % context.account.huobi_cny_ltc)
         context.order.sell_limit(context.security, quantity=str(context.account.huobi_cny_ltc),
-                                 price=str(hist_close[-1]*0.99))
+                                 price=str(hist_close[-1]))
     else:
         # 等待下一次买入
         context.user_data.status = "buy"
