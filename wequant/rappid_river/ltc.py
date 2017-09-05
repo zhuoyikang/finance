@@ -158,15 +158,15 @@ def handle_buy(context, hist):
 
 
     # 只买一次，能买多少是多少
+    buy_price = context.data.get_current_price(context.security)
     context.log.info("正在买入 %s" % context.security)
     context.log.info("下单金额为 %s 元" % context.account.huobi_cny_cash)
+    context.log.info("买入单价 %s" % buy_price)
 
     context.user_data.status = "sell"
 
-    if context.user_data.buy_price < hist_close[-1]:
-        context.user_data.buy_price = hist_close[-1]
     context.order.buy_limit(context.security, quantity=str(buy_quantity),
-                            price=str(hist_close[-1]))
+                            price=str(buy_price))
 
 
 
@@ -207,16 +207,13 @@ def handle_sell(context, hist):
         return
 
     if context.account.huobi_cny_ltc >= HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
-        sell_price = hist_close[-1]
-
-        # 计算亏损，如果亏损太大则不卖
-        # if ((sell_price - context.user_data.buy_price) / context.user_data.buy_price) < context.user_data.price_threshold:
-        #     return
+        sell_price = context.data.get_current_price(context.security)
 
         context.log.warn("正在卖出 %s" % context.security)
         context.log.warn("卖出数量为 %s" % context.account.huobi_cny_ltc)
+        context.log.warn("卖出价格 %s" % sell_price)
         context.order.sell_limit(context.security, quantity=str(context.account.huobi_cny_ltc),
-                                 price=str(hist_close[-1]))
+                                 price=str(sell_price))
     else:
         # 等待下一次买入
         context.user_data.status = "buy"
