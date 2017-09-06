@@ -148,8 +148,10 @@ def handle_buy(context, hist):
         #context.log.info("想买，但是没钱")
         return
 
+    buy_price = np.mean(hist_close[-1 * 5:])
+
     # 有买入信号，且持有现金，则市价单全仓买入
-    buy_quantity = context.account.huobi_cny_cash/hist_close[-1]
+    buy_quantity = context.account.huobi_cny_cash/buy_price
 
     if buy_quantity < HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
         # context.user_data.status = "sell"
@@ -158,7 +160,7 @@ def handle_buy(context, hist):
 
 
     # 只买一次，能买多少是多少
-    buy_price = context.data.get_current_price(context.security)
+
     context.log.info("正在买入 %s" % context.security)
     context.log.info("下单金额为 %s 元" % context.account.huobi_cny_cash)
     context.log.info("买入单价 %s" % buy_price)
@@ -207,7 +209,8 @@ def handle_sell(context, hist):
         return
 
     if context.account.huobi_cny_ltc >= HUOBI_CNY_LTC_MIN_ORDER_QUANTITY:
-        sell_price = context.data.get_current_price(context.security)
+        # sell_price = context.data.get_current_price(context.security)
+        sell_price = np.mean(hist_close[-1 * 5:])
 
         context.log.warn("正在卖出 %s" % context.security)
         context.log.warn("卖出数量为 %s" % context.account.huobi_cny_ltc)
