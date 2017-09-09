@@ -22,8 +22,8 @@ import talib
 # PARAMS用于设定程序参数，回测的起始时间、结束时间、滑点误差、初始资金和持仓。
 # 可以仿照格式修改，基本都能运行。如果想了解详情请参考新手学堂的API文档。
 PARAMS = {
-    "start_time": "2017-09-01 00:00:00",
-    "end_time": "2017-09-04 20:00:00",
+    "start_time": "2017-09-07 06:00:00",
+    "end_time": "2017-09-08 07:00:00",
     "commission": 0.001,  # 此处设置交易佣金
     "slippage": 0.001,  # 此处设置交易滑点
     "account_initial": {"huobi_cny_cash": 100000,
@@ -36,7 +36,7 @@ PARAMS = {
 # 策略变量包含：必填变量，以及非必填（用户自己方便使用）的变量
 def initialize(context):
     # 设置回测频率, 可选："1m", "5m", "15m", "30m", "60m", "4h", "1d", "1w"
-    context.frequency = "60m"
+    context.frequency = "15m"
     # 设置回测基准, 比特币："huobi_cny_btc", 莱特币："huobi_cny_ltc", 以太坊："huobi_cny_ltc"
     context.benchmark = "huobi_cny_ltc"
     # 设置回测标的, 比特币："huobi_cny_btc", 莱特币："huobi_cny_ltc", 以太坊："huobi_cny_ltc"
@@ -47,7 +47,7 @@ def initialize(context):
     context.user_data.period_window = 14
 
     # 布林线的宽度（2倍标准差）
-    context.user_data.standard_deviation_range = 2
+    context.user_data.standard_deviation_range = 2.2
     context.user_data.bbands_opt_width_m = 60
 
 
@@ -75,9 +75,11 @@ def handle_data(context):
     # 生成交易信号
     if current_price > upper[-1]:  # 穿越上轨，买入信号
         long_signal_triggered = True
+        #short_signal_triggered = True
 
     if current_price < lower[-1]:  # 穿越下轨，卖出信号
         short_signal_triggered = True
+        #long_signal_triggered = True
 
     context.log.info("当前 价格为：%s, 上轨为：%s, 下轨为: %s" % (current_price, upper[-1], lower[-1]))
 
