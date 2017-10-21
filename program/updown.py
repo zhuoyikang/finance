@@ -17,11 +17,12 @@ if __name__=="__main__":
 
     price = float(sys.argv[1])
     principal = float(sys.argv[2])
-    diff = 1000
-    rate = diff / principal
+    # diff = 1000
+    # rate = diff / principal
+    rate = 0.04
 
     down = price -  (price * rate)
-    up =  price +  (price * rate * 2)
+    up =  price +  (price * rate )
 
     print "rate:", rate
     print "up price:", up
