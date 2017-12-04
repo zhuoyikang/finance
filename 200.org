@@ -1,0 +1,7 @@
+  从 1w 刀亏到现在只剩 200 刀，那么要怎么办呢？
+
+* BCH Entry:1498 Target:1660 StopLose:Nan LiqPrice:934.25 Load:Half Total:211$
+  SCHEDULED: <2017-12-04 Mon>
+
+
+
