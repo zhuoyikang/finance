@@ -1,13 +1,19 @@
   从 1w 刀亏到现在只剩 200 刀，那么要怎么办呢？
 
-* TODO BCH Entry:1498 Target:1660 StopLose:Nan LiqPrice:934.25 Load:Half Total:211$
-  SCHEDULED: <2017-12-04 Mon>
+* DONE BCH Entry:1498 Target:1600 StopLose:Nan LiqPrice:934.25 Load:Half Total:211$
+  CLOSED: [2017-12-05 Tue 17:44] SCHEDULED: <2017-12-04 Mon>
 
   quit:1525   profits:4$
+  不应该中途退出，很快价格达到 1600，只吃到很少一部分利润。
+  如果觉得有更好的机会，可以减仓，但不能完全清仓。
 
+* DONE IOTA Entry:2.613 Target:3.19  StopLose:Nan LiqPrice:1.39 Load:Half Total:215$
+  CLOSED: [2017-12-05 Tue 17:44] SCHEDULED: <2017-12-04 Mon>
 
-* TODO IOTA Entry:2.613 Target:3.19  StopLose:Nan LiqPrice:1.39 Load:Half Total:215$
-  SCHEDULED: <2017-12-04 Mon>
+  Target:3.19
+  完美。。。这次盈利 85$.
 
-
-
+* TODO EOS Entry:3.8 Target:4.82  StopLose:Nan LiqPrice:2.06 Load:Half Total:301$
+  SCHEDULED: <2017-12-05 Tue>
+  
+  EOS 可以 VS ETH，翡非常有前途，也许可以长期做多，先从 3.8 开始做一次，估计 12-09 08:00 达到 target.
