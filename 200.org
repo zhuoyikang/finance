@@ -3,5 +3,11 @@
 * TODO BCH Entry:1498 Target:1660 StopLose:Nan LiqPrice:934.25 Load:Half Total:211$
   SCHEDULED: <2017-12-04 Mon>
 
+  quit:1525   profits:4$
+
+
+* TODO IOTA Entry:2.613 Target:3.19  StopLose:Nan LiqPrice:1.39 Load:Half Total:215$
+  SCHEDULED: <2017-12-04 Mon>
+
 
 
