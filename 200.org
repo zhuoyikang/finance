@@ -3,17 +3,27 @@
 * DONE BCH Entry:1498 Target:1600 StopLose:Nan LiqPrice:934.25 Load:Half Total:211$
   CLOSED: [2017-12-05 Tue 17:44] SCHEDULED: <2017-12-04 Mon>
 
+  2016-12-05
   quit:1525   profits:4$
-  不应该中途退出，很快价格达到 1600，只吃到很少一部分利润。
+  不应该中途退出，很快应该价格达到 1600，只吃到很少一部分利润。
   如果觉得有更好的机会，可以减仓，但不能完全清仓。
+
+  2016-12-06
+  时机上并没有打到 1600，价格 6 号回到了 1415，时机上当时退出是个非常正确的决定.
+  
 
 * DONE IOTA Entry:2.613 Target:3.19  StopLose:Nan LiqPrice:1.39 Load:Half Total:215$
   CLOSED: [2017-12-05 Tue 17:44] SCHEDULED: <2017-12-04 Mon>
 
-  Target:3.19
-  完美。。。这次盈利 85$.
+
+  2016-12-05
+  Target:3.19 完美。。。这次盈利 85$.
+
+  2016-12-06
+  IOTA 价格又突破了 3.8，当时 3.19 收摊时曾考虑低点再入手，可惜没买，现在只能再等下次机会了。
 
 * TODO EOS Entry:3.8 Target:4.82  StopLose:Nan LiqPrice:2.06 Load:Half Total:301$
   SCHEDULED: <2017-12-05 Tue>
   
   EOS 可以 VS ETH，翡非常有前途，也许可以长期做多，先从 3.8 开始做一次，估计 12-09 08:00 达到 target.
+  
