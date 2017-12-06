@@ -27,9 +27,18 @@
   EOS 可以 VS ETH，非常有前途，也许可以长期做多，先从 3.8 开始做一次，估计 12-09 08:00 达到 target.
   4.6 退出，盈利 125 刀，还是不错，但是 EOS 很快涨到了 5.2，还是过早退出了。可以继续使用 tail top，等其下降时再退出。
 
-* TODO ETC Entry:27.061 Target:32  StopLose:Nan LiqPrice:14.686 Load:Half Total:413$
-  SCHEDULED: <2017-12-05 Tue>
+* DONE ETC Entry:27.061 Target:32  StopLose:Nan LiqPrice:14.686 Load:Half Total:413$
+  CLOSED: [2017-12-06 Wed 21:18] SCHEDULED: <2017-12-05 Tue>
   
   Etc 刚好到支持线，是买入时机，准备承受这个风险，半仓买入了 ETC。
+
+  FAIL. 失败，ETC 跌破了支撑线，获取到教训。
+
+  不要在支撑点买入！！！！！！！！应在支撑点出现明显回弹再买入。
   
  
+
+* TODO EOS Entry:4.83 Target:5.82  StopLose:Nan LiqPrice:2.56 Load:Half Total:391$
+  SCHEDULED: <2017-12-05 Tue>
+  
+  EOS 可以继续做多。
