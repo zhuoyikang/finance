@@ -25,5 +25,14 @@
 * TODO EOS Entry:3.8 Target:4.82  StopLose:Nan LiqPrice:2.06 Load:Half Total:301$
   SCHEDULED: <2017-12-05 Tue>
   
-  EOS 可以 VS ETH，翡非常有前途，也许可以长期做多，先从 3.8 开始做一次，估计 12-09 08:00 达到 target.
+  EOS 可以 VS ETH，非常有前途，也许可以长期做多，先从 3.8 开始做一次，估计 12-09 08:00 达到 target.
+
+* TODO ETC Entry:27.399 Target:4.82  StopLose:Tail:-1.4 LiqPrice:19.445 Load:Half Total:301$
+  SCHEDULED: <2017-12-05 Tue>
   
+  EtC 刚好到支持线，是买入时机，准备承受这个风险，将剩下的半仓买入了 ETC。系统同时将 EOS 的 liq price 提高到了 2.8131
+  
+
+  [[file:./images/2016-12-07-etc.jpeg]]
+
+
