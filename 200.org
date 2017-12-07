@@ -38,7 +38,16 @@
   
  
 
-* TODO EOS Entry:4.83 Target:5.82  StopLose:Nan LiqPrice:2.56 Load:Half Total:391$
-  SCHEDULED: <2017-12-05 Tue>
+* DONE EOS Entry:4.83 Target:5.82  StopLose:Nan LiqPrice:2.56 Load:Half Total:391$
+  CLOSED: [2017-12-07 Thu 21:40] SCHEDULED: <2017-12-05 Tue>
   
   EOS 可以继续做多。
+
+* TODO IOTA Entry:3.71 Target:6.2  StopLose:Nan LiqPrice:2.24 Load:Half Total:382$
+  SCHEDULED: <2017-12-07 Thu>
+  
+  btc 今天一路疯长，突破了 15000，其他所有币种均下降，所以是其他币种的很好的买入时机。
+
+  每次 BTC 突破新高，其他所有币种呈下降趋势，等 btc 涨过之后，会引来其他币种的集体恢复，这时候挑选有潜力的上车。
+
+  由于 IOTA 和 EOS 最近涨的很猛，我挑选了 IOTA 上车。
