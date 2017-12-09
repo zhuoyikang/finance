@@ -43,11 +43,29 @@
   
   EOS 可以继续做多。
 
-* TODO IOTA Entry:3.71 Target:6.2  StopLose:Nan LiqPrice:2.24 Load:Half Total:382$
-  SCHEDULED: <2017-12-07 Thu>
+* DONE IOTA Entry:3.71 Target:6.2  StopLose:Nan LiqPrice:2.24 Load:Half Total:382$
+  CLOSED: [2017-12-08 Fri 09:46] SCHEDULED: <2017-12-07 Thu>
   
   btc 今天一路疯长，突破了 15000，其他所有币种均下降，所以是其他币种的很好的买入时机。
 
   每次 BTC 突破新高，其他所有币种呈下降趋势，等 btc 涨过之后，会引来其他币种的集体恢复，这时候挑选有潜力的上车。
 
   由于 IOTA 和 EOS 最近涨的很猛，我挑选了 IOTA 上车。
+
+  * 早上起来 IOTA 涨到 4.2，涨幅超过 20%，我没有卖，觉得还会涨。不到一会跌倒了 3.88，我卖了。。
+  * 合理止盈，不要贪。
+
+
+
+
+* TODO BCH Entry:1424 Target:1524  StopLose:Nan LiqPrice:891 Load:Half Total:572$
+
+  这几做短线又盈利了 200 刀，重新上车 bch。
+
+  本来昨天晚上感到 ltc 会暴涨，110 上了车，但是使用 trail stop 止损把自己震荡下车了，错过了一次机会。
+  果然，刚开始入场不用使用 trail stop，很容易提前被震出局，必须要用盈利之后使用。可以锁定利润。
+
+
+
+  1. 这个时候以 1424 的价格买入 bch 价格有点高。1400 应该也可以买入。
+  2. 1 单应该做长久一点，不能频繁上下车。
