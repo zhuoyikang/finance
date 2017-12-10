@@ -58,14 +58,30 @@
 
 
 
-* TODO BCH Entry:1424 Target:1524  StopLose:Nan LiqPrice:891 Load:Half Total:572$
+* DONE BCH Entry:1424 Target:1524  StopLose:Nan LiqPrice:891 Load:Half Total:572$
+  CLOSED: [2017-12-10 Sun 09:32]
 
   这几做短线又盈利了 200 刀，重新上车 bch。
 
   本来昨天晚上感到 ltc 会暴涨，110 上了车，但是使用 trail stop 止损把自己震荡下车了，错过了一次机会。
   果然，刚开始入场不用使用 trail stop，很容易提前被震出局，必须要用盈利之后使用。可以锁定利润。
-
-
-
+  
   1. 这个时候以 1424 的价格买入 bch 价格有点高。1400 应该也可以买入。
   2. 1 单应该做长久一点，不能频繁上下车。
+
+* DONE Total:507$
+
+  昨天开始想换车上，查看 bitfix 上的买卖深度，换了几个币种，亏了 60 多刀，感觉每一个币种的卖压都很重，实在不知道买什么好。睡觉前清仓。
+
+  第 2 天起床，所有的币种都成下跌之势，所以：
+
+  1. 当所有币种都存在极大的卖压时。
+  2. stoch rsi 大于 70 左右，很有可能会由高走低。
+  3. 非常适合下空单。
+
+
+* TODO BTC Entry:13510 target:NAN StopLose:Nan LiqPrice:10274  Load:2/3 Total: 507$
+
+  1. 基本上所有币种都在下跌，但是 btc 率先走完了 stoch rsi 4 小时的低谷，并且观察买压很重，价格应该会至少反弹一拨。所以做空。
+  2. 同一时间其他币种还没有走完 stoch rsi 4 小的下跌.
+
