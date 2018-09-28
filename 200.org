@@ -80,8 +80,13 @@
   3. 非常适合下空单。
 
 
-* TODO BTC Entry:13510 target:NAN StopLose:Nan LiqPrice:10274  Load:2/3 Total: 507$
+* TODO BTC Entry:13510 target:NAN StopLose:Nan LiqPrice:10274  Load:2/3 Total: 457$
 
-  1. 基本上所有币种都在下跌，但是 btc 率先走完了 stoch rsi 4 小时的低谷，并且观察买压很重，价格应该会至少反弹一拨。所以做空。
-  2. 同一时间其他币种还没有走完 stoch rsi 4 小的下跌.
+  1) 基本上所有币种都在下跌，但是 btc 率先走完了 stoch rsi 4 小时的低谷，并且观察买压很重，价格应该会至少反弹一拨。所以做空。
+  2) 同一时间其他币种还没有走完 stoch rsi 4 小的下跌.
+
+     
+
+
+
 
